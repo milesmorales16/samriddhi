@@ -57,21 +57,42 @@ cp .env.example .env.prod
 # Edit .env.prod: change POSTGRES_DB to 'samriddhi' and set secure password
 ```
 
-**2. Development Mode** (Hot-reload enabled)
-```bash
-docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
-```
-- **Backend:** [http://localhost:8000](http://localhost:8000)
-- **Frontend:** [http://localhost:5173](http://localhost:5173)
-- **Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
-
-**2. Production Mode** (Local LAN Access)
-```bash
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
-```
-- **App:** [https://localhost](https://localhost) (or your LAN IP)
 - **Data:** Persisted in `./data/prod/postgres`
 - **Uploads:** Stored in `./data/prod/uploads`
+
+### 3. Generate SSL Certificates (Required for HTTPS)
+This project uses HTTPS by default. You must generate trusted certificates for your LAN IP.
+
+1.  **Install mkcert:**
+    - Linux: `sudo apt install libnss3-tools && mkcert -install`
+    - macOS: `brew install mkcert && mkcert -install`
+    - Windows: `choco install mkcert && mkcert -install`
+
+2.  **Generate & Rename Certificates:**
+    Run the following command in the project root, replacing `192.168.x.x` with your machine's LAN IP:
+    ```bash
+    mkcert -key-file cert-key.pem -cert-file cert.pem 192.168.x.x localhost 127.0.0.1 ::1
+    ```
+    *Note: This command directly generates the files with the generic names `cert.pem` and `cert-key.pem` expected by Docker Compose.*
+
+### 4. Start the Application
+
+**Development (Hot Reload):**
+```bash
+docker compose -p samriddhi-dev -f docker-compose.yml -f docker-compose.dev.yml up -d
+```
+- **Frontend:** `https://<LAN_IP>:8443` (proxied) or `http://localhost:5173` (direct)
+- **Backend:** `https://<LAN_IP>:8443/api` (proxied) or `http://localhost:8000` (direct)
+- **DB Port:** 5432
+
+**Production (Optimized):**
+```bash
+docker compose -p samriddhi-prod -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+- **Application:** `https://<LAN_IP>:9443`
+- **DB Port:** 5433 (to avoid conflict with dev)
+
+**Note:** Replace `<LAN_IP>` with your machine's IP address (e.g., `192.168.4.4`). HTTP requests to ports 8000 (Dev) and 9000 (Prod) are automatically redirected to HTTPS.
 
 ## 📂 Documentation
 

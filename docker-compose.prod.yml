@@ -1,6 +1,8 @@
 services:
   db:
     env_file: .env.prod
+    ports:
+      - "5433:5432"
     volumes:
       - ./data/prod/postgres:/var/lib/postgresql/data
     restart: always
@@ -14,16 +16,21 @@ services:
 
   frontend:
     # Served via Caddy in prod, but we keep the container running for now
-    command: npm run preview -- --host --port 5173
+    command: sh -c "npm run build && npm run preview -- --host 0.0.0.0 --port 5173"
     restart: always
 
   caddy:
     image: caddy:2-alpine
     restart: always
+    environment:
+      - HTTPS_PORT=9443
     ports:
-      - "8080:80"
+      - "9000:80"
+      - "9443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./cert.pem:/etc/caddy/cert.pem:ro
+      - ./cert-key.pem:/etc/caddy/cert-key.pem:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on:

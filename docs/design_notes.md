@@ -14,12 +14,15 @@
 - **Rationale:** Ensures complete isolation between dev and prod databases. Simple, standard practice for local-first development. Machine-level encryption (encrypted volumes) provides additional security layer.
 
 ## 2025-11-21: Network Architecture Refinement
-- **Decision:** Unified Caddy Configuration.
-    - **Internal:** Caddy listens on `:80` and proxies to `backend:8000` and `frontend:5173`.
-    - **Dev:** Host `8000` -> Container `80` (Caddy).
-    - **Prod:** Host `8080` -> Container `80` (Caddy).
-- **Rationale:** Ensures consistent internal routing while allowing distinct external ports for dev/prod environments without port conflicts.
-- **Status:** Backend folder deleted due to permission issues; pending rebuild.
+- **Decision:** Unified Caddy Configuration with Environment-Specific Ports.
+    - **Certificates:** Use `mkcert` to generate locally-trusted certificates for the LAN IP.
+    - **Files:** Renamed to `cert.pem` and `cert-key.pem` for portability.
+    - **Caddyfile:** Listens on `:443` (internal) and redirects HTTP to HTTPS.
+    - **Dev:** Host `8443` -> Container `443`, Host `8000` -> Container `80`.
+    - **Prod:** Host `9443` -> Container `443`, Host `9000` -> Container `80`.
+    - **Database:** Dev on `5432`, Prod on `5433` to allow simultaneous execution.
+- **Rationale:** Ensures consistent internal routing, secure HTTPS access on LAN, and prevents port conflicts between environments.
+- **Status:** Fully implemented and verified.
 
 ## 2025-11-21: Developer Experience
 - **Workflow:** Added `.agent/workflows/setup_docker_permissions.md` to help non-root users manage Docker containers.

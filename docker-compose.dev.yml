@@ -3,14 +3,14 @@ services:
     env_file: .env.dev
     volumes:
       - postgres_data_dev:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   backend:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     env_file: .env.dev
     volumes:
       - ./backend:/app
-    ports:
-      - "8000:8000"
 
   frontend:
     command: npm run dev -- --host
@@ -22,10 +22,15 @@ services:
 
   caddy:
     image: caddy:2-alpine
+    environment:
+      - HTTPS_PORT=8443
     ports:
       - "8000:80"
+      - "8443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./cert.pem:/etc/caddy/cert.pem:ro
+      - ./cert-key.pem:/etc/caddy/cert-key.pem:ro
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
