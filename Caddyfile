@@ -4,7 +4,7 @@
 }
 
 # Production (Local LAN)
-:8080 {
+:80 {
     reverse_proxy /api/* backend:8000
     reverse_proxy * frontend:5173
 }

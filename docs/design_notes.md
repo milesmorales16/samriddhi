@@ -1,5 +1,17 @@
 # Design & Implementation Notes
 
+> [!IMPORTANT]
+> **MAINTAIN REVERSE CHRONOLOGICAL ORDER**
+> Newest entries must always be added to the TOP of this list, immediately after this header.
+
+## 2025-11-21: Network Architecture Refinement
+- **Decision:** Unified Caddy Configuration.
+    - **Internal:** Caddy listens on `:80` and proxies to `backend:8000` and `frontend:5173`.
+    - **Dev:** Host `8000` -> Container `80` (Caddy).
+    - **Prod:** Host `8080` -> Container `80` (Caddy).
+- **Rationale:** Ensures consistent internal routing while allowing distinct external ports for dev/prod environments without port conflicts.
+- **Status:** Backend folder deleted due to permission issues; pending rebuild.
+
 ## 2025-11-21: Developer Experience
 - **Workflow:** Added `.agent/workflows/setup_docker_permissions.md` to help non-root users manage Docker containers.
 
