@@ -53,6 +53,10 @@ Samriddhi is a personal risk engine and trading journal designed to track the li
     *   **Layer A (Bind Mounts):** Production database maps to a visible host directory (`./data/prod/postgres`) for easy access and manual backup.
     *   **Layer B (Nightly Dump):** Cron job to `pg_dump` to a separate backup directory.
     *   **Layer C (Offsite):** Sync backup directory to cloud storage (Dropbox/Drive).
+*   **Security & Access:**
+    *   **Encrypted Storage:** User-uploaded CSVs will be stored in a dedicated bind mount (`./data/prod/uploads`) which should be on an encrypted partition (LUKS) or handled via application-level encryption (Phase 2). For Phase 1, we will rely on host-level disk encryption.
+    *   **LAN Access:** The Nginx reverse proxy will listen on `0.0.0.0` to allow access from the home network.
+    *   **HTTPS:** We will use a self-signed certificate (mkcert) or Let's Encrypt (via Caddy/Traefik) to enforce HTTPS. **Decision:** Use **Caddy** as the reverse proxy for automatic HTTPS (even with self-signed/local CA).
 
 ## 4. Alternatives Considered
 

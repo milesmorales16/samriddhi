@@ -1,0 +1,34 @@
+services:
+  db:
+    volumes:
+      - ./data/prod/postgres:/var/lib/postgresql/data
+    restart: always
+
+  backend:
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    restart: always
+    volumes:
+      - ./data/prod/uploads:/app/uploads
+
+  frontend:
+    # Served via Caddy in prod, but we keep the container running for now
+    command: npm run preview -- --host --port 5173
+    restart: always
+
+  caddy:
+    image: caddy:2-alpine
+    restart: always
+    ports:
+      - "80:8080"
+      - "443:8080"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  caddy_data:
+  caddy_config:
