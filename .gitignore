@@ -17,4 +17,6 @@ data/prod/
 
 # Environment
 .env
+.env.dev
+.env.prod
 .DS_Store

@@ -48,8 +48,13 @@ newgrp docker
 **1. Configure Environment Variables**
 Copy the example environment file and update with your credentials:
 ```bash
-cp .env.example .env
-# Edit .env and set secure values for POSTGRES_PASSWORD
+# For development
+cp .env.example .env.dev
+# Edit .env.dev and set secure values for POSTGRES_PASSWORD
+
+# For production (when ready)
+cp .env.example .env.prod
+# Edit .env.prod: change POSTGRES_DB to 'samriddhi' and set secure password
 ```
 
 **2. Development Mode** (Hot-reload enabled)
