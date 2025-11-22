@@ -4,6 +4,13 @@
 > **MAINTAIN REVERSE CHRONOLOGICAL ORDER**
 > Newest entries must always be added to the TOP of this list, immediately after this header.
 
+## 2025-11-21: Secrets Management
+- **Decision:** Use `.env` file for database credentials.
+    - `.env` is gitignored to prevent credential leakage.
+    - `.env.example` provides a template for setup.
+    - Docker Compose services use `env_file: .env` to load credentials.
+- **Rationale:** Simple, standard practice for local-first development. Machine-level encryption (encrypted volumes) provides additional security layer.
+
 ## 2025-11-21: Network Architecture Refinement
 - **Decision:** Unified Caddy Configuration.
     - **Internal:** Caddy listens on `:80` and proxies to `backend:8000` and `frontend:5173`.

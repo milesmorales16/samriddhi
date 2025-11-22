@@ -45,7 +45,14 @@ newgrp docker
 
 ### Running Locally
 
-**1. Development Mode** (Hot-reload enabled)
+**1. Configure Environment Variables**
+Copy the example environment file and update with your credentials:
+```bash
+cp .env.example .env
+# Edit .env and set secure values for POSTGRES_PASSWORD
+```
+
+**2. Development Mode** (Hot-reload enabled)
 ```bash
 docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```
