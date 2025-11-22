@@ -15,8 +15,13 @@ env/
 postgres_data_dev/
 data/prod/
 
-# Environment
+# Environment files
 .env
 .env.dev
 .env.prod
+
+# SSL Certificates (machine-specific)
+cert.pem
+cert-key.pem
+*.pem
 .DS_Store
